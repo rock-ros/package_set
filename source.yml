@@ -1,0 +1,5 @@
+name: rock.ros
+
+version_control:
+    - tools/rtt_transports/ros:
+        gitorious: orocos-communication/ros-transport

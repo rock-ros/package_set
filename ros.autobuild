@@ -1,0 +1,3 @@
+cmake_package 'tools/rtt_transports/ros' do |pkg|
+    pkg.define 'ROS_DIR', '/opt/ros/fuerte/share/ros/cmake'
+end

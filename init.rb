@@ -1,0 +1,5 @@
+Autobuild.update_environment '/opt/ros/fuerte'
+Autoproj.env_add_path 'CMAKE_PREFIX_PATH', '/opt/ros/fuerte'
+Autoproj.env_add_path 'PYTHONPATH', '/opt/ros/fuerte/lib/python2.7/dist-packages'
+Autoproj.env_set 'ROS_MASTER_URI', 'http://localhost:11311'
+Autobuild::Orogen.transports << 'ros'
