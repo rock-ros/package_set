@@ -1,3 +1,3 @@
 cmake_package 'tools/rtt_transports/ros' do |pkg|
-    pkg.define 'ROS_DIR', '/opt/ros/fuerte/share/ros/cmake'
+    pkg.define 'ROS_DIR', File.join(Autoproj.user_config('ROS_PREFIX'), 'share', 'ros', 'cmake')
 end
