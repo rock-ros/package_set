@@ -1,13 +1,13 @@
 available_ros_versions = []
 Dir.glob('/opt/ros/*') do |path|
-    if path >= '/opt/ros/f'
+    if path >= '/opt/ros/g'
         available_ros_versions << path
     end
 end
 
 configuration_option('ROS_PREFIX', 'string',
     :default => available_ros_versions.max,
-    :doc => ["Which ROS prefix should we be using ? (needs to be fuerte or newer)"]) do |path|
+    :doc => ["Which ROS prefix should we be using ? (needs to be groovy or newer)"]) do |path|
     path = File.expand_path(path)
     if !File.directory?(path)
         raise Autoproj::InputError, "#{path} does not exist or is not a directory"
