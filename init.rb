@@ -21,4 +21,14 @@ Autobuild.update_environment Autoproj.user_config('ROS_PREFIX')
 Autoproj.env_add_path 'CMAKE_PREFIX_PATH', Autoproj.user_config('ROS_PREFIX')
 Autoproj.env_add_path 'PYTHONPATH', File.join(Autoproj.user_config('ROS_PREFIX'), 'lib', 'python2.7', 'dist-packages')
 Autoproj.env_set 'ROS_MASTER_URI', 'http://localhost:11311'
+Autobuild.env_clear 'ROS_ROOT'
 Autobuild::Orogen.transports << 'ros'
+
+# We cannot set ROS_ROOT within the autoproj environment as some of the RTT
+# stuff still tries to build as ROS when set. Instead, set ROS_ROOT in a
+# separate env file and source it at the end of the env.sh
+env_ros = File.join(Autoproj.root_dir, ".env-ros.sh")
+File.open(env_ros, 'w') do |io|
+    io.puts "export ROS_ROOT=#{Autoproj.user_config('ROS_PREFIX')}"
+end
+Autoproj.env_source_after env_ros
