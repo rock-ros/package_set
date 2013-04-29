@@ -11,7 +11,7 @@ configuration_option('ROS_PREFIX', 'string',
     path = File.expand_path(path)
     if !File.directory?(path)
         raise Autoproj::InputError, "#{path} does not exist or is not a directory"
-    elsif !File.directory?(cmake_path = File.join(path, 'share', 'ros', 'cmake'))
+    elsif !File.directory?(cmake_path = File.join(path, 'share', 'catkin', 'cmake'))
         raise Autoproj::InputError, "#{path} does not look like a ROS install path (#{cmake_path} does not exist)"
     end
     path
