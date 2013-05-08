@@ -1,3 +1,6 @@
 cmake_package 'tools/rtt_transports/ros' do |pkg|
     pkg.define 'ROS_DIR', File.join(Autoproj.user_config('ROS_PREFIX'), 'share', 'ros', 'cmake')
 end
+ruby_package 'tools/orogen_ros' do |pkg|
+    Autoproj.env_add_path 'OROGEN_PLUGIN_PATH', File.join(pkg.srcdir, "lib", "orogen_ros", "plugin.rb" )
+end
