@@ -1,2 +1,1 @@
-roslib:
-    ubuntu: ros-fuerte-ros-comm
+roslib: ignore
