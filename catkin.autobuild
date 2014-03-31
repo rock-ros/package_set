@@ -1,0 +1,81 @@
+# create a catkin_package, so the catkin "src" folder does not occur in the pacake name
+# done by creating a real package include in the src folder and also creating a metapackage
+# for renaming to the manifests, so one can write "- ros/navigation" and that translates to a 
+# ros/src/navigation checkout destination
+
+def catkin_package (name)
+	catkin_package_internal "ros/src/#{name}"
+	metapackage "ros/#{name}", "ros/src/#{name}" do |pkg|
+	end
+end
+
+# catkin packages are build in a single step by catkin
+# so here, they all depend on a single special package which only executes the build once
+# this dependency is added here
+
+def catkin_package_internal(options, &block)
+    package_common(:import, options) do |pkg|
+        pkg.depends_on('ros')
+    end
+end
+
+
+# build definitions for catkin, catkin_package are all dependent on this,
+# so the build is only executed once for a single catkin_build_package:
+def catkin_build_package(options, &block)
+    package_common(:import, options) do |pkg|
+		yield(pkg) if block_given?
+		Autobuild.parallel_build_level=1
+		def pkg.import
+			#we don't import, but the install function (overridden below) needs to be executed, so this is a import package with nothing to import
+	    end
+	    def pkg.install
+	    	message "invoking catkin_make_isolated in folder \"%s\": this could take a while"
+	        message "\t to see the progress use: tail -f ${AUTOPROJ_PROJECT_BASE}/install/log/ros-build.log"
+	        installspace=ENV['AUTOPROJ_PROJECT_BASE'] +"/install/"
+	        ENV['LANG']="C.UTF-8"
+	        Autobuild::Subprocess.run(self, 'build', 'catkin_make_isolated', "--install-space=#{installspace}", :working_directory => 'ros')
+	        message "installing catkin packages to " + installspace
+	        Autobuild::Subprocess.run(self, 'build', 'catkin_make_isolated', "--install-space=#{installspace}", '--install', :working_directory => 'ros')
+	    end
+	    
+	    def pkg.prepare_for_forced_build
+	    	message "invoking catkin_make_isolated --force-cmake in folder \"%s\": this could take a while"
+	    	installspace=ENV['AUTOPROJ_PROJECT_BASE'] +"/install/"
+	        ENV['LANG']="C.UTF-8"
+	    	Autobuild::Subprocess.run(self, 'build', 'catkin_make_isolated', "--install-space=#{installspace}", "--force-cmake", :working_directory => 'ros')
+	    end
+	    
+	    def pkg.prepare_for_rebuild
+	    	installspace=ENV['AUTOPROJ_PROJECT_BASE'] +"/ros"
+	    	message "deleting build folder #{installspace}/build_isolated"
+		    Autobuild::Subprocess.run(self, 'build', 'rm', "-rf", "#{installspace}/build_isolated", :working_directory => 'ros')
+		    Autobuild::Subprocess.run(self, 'build', 'rm', "-rf", "#{installspace}/devel_isolated", :working_directory => 'ros')
+        end
+        
+    end
+end
+
+
+
+# internal package to invoke catkin (don't use outside this file)
+# it is the dependency to actually invoke catkin
+# the name is fixed to ros in order to let "amake" work in the ros/ subfolder
+
+catkin_build_package 'ros'
+
+
+
+# actual ros packages
+# IMPORTANT: they do NOT state the /ros/ prefix, it is added automatically by the 
+# catkin_package definition
+
+catkin_package 'navigation_2d' do |pkg|
+	#we cannot add os dependencies in the package itself, so do it here:
+	pkg.depends_on('tbb');
+	pkg.depends_on('ros/p2os');
+end
+
+catkin_package 'navigation'
+catkin_package 'bfl'
+catkin_package 'p2os'

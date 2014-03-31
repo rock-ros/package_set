@@ -1,0 +1,4 @@
+roslib: ignore
+
+tbb:
+     ubuntu: [libtbb-dev]

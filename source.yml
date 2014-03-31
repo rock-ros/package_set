@@ -1,9 +1,36 @@
 name: rock.ros
 
 version_control:
+#rock-ros bridge
     - tools/rtt_transports/ros:
         gitorious: orocos-communication/ros-transport
         branch: $ROCK_FLAVOR
     - tools/orogen_ros:
         gitorious: rock-ros/orogen_ros
         branch: $ROCK_FLAVOR
+
+#catkin packages
+    #dummy package to invoke catkin once for all packages below        
+    - ros:
+        type: none
+        
+    - ros/src/navigation_2d/*:
+        type: git
+        url: https://github.com/skasperski/navigation_2d.git
+        push_to: https://github.com/skasperski/navigation_2d.git
+    
+    - ros/src/navigation:
+        type: git
+        url: https://github.com/ros-planning/navigation.git
+        push_to: https://github.com/ros-planning/navigation.git
+        branch: hydro-devel
+      
+    - ros/src/bfl:
+        type: git
+        url: https://github.com/ros-gbp/bfl-release.git
+        push_to: https://github.com/ros-gbp/bfl-release.git
+        branch: upstream
+      
+    - ros/src/p2os:
+        type: git
+        url: https://github.com/allenh1/p2os.git
