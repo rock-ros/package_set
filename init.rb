@@ -19,6 +19,7 @@ end
 
 Autobuild.update_environment Autoproj.user_config('ROS_PREFIX')
 Autoproj.env_add_path 'CMAKE_PREFIX_PATH', Autoproj.user_config('ROS_PREFIX')
+Autoproj.env_set 'ROS_SETUP', Autoproj.user_config('ROS_PREFIX') + "/setup.sh"
 Autoproj.env_add_path 'PYTHONPATH', File.join(Autoproj.user_config('ROS_PREFIX'), 'lib', 'python2.7', 'dist-packages')
 Autoproj.env_set 'ROS_MASTER_URI', 'http://localhost:11311'
 Autobuild.env_clear 'ROS_ROOT'

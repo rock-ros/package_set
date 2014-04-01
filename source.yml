@@ -34,3 +34,25 @@ version_control:
     - ros/src/p2os:
         type: git
         url: https://github.com/allenh1/p2os.git
+        
+    - ros/src/moveit/.*:
+        type: git
+        url: https://github.com/ros-planning/moveit_$PACKAGE_BASENAME.git
+        branch: hydro-devel
+        
+    - ros/src/object_recognition/vision/.*:
+        type: svn
+        url: http://agas-ros-pkg.googlecode.com/svn/trunk/object_recognition/src/vision/object_recognition/$PACKAGE_BASENAME
+        
+    - ros/src/common_msgs:
+        type: git
+        url: https://github.com/ros/common_msgs.git
+        branch: hydro-devel
+    
+    - ros/src/std_msgs:
+        type: git
+        url: https://github.com/ros/std_msgs.git
+        branch: groovy-devel
+    
+    
+        

@@ -3,9 +3,12 @@
 # for renaming to the manifests, so one can write "- ros/navigation" and that translates to a 
 # ros/src/navigation checkout destination
 
-def catkin_package (name)
-	catkin_package_internal "ros/src/#{name}"
+def catkin_package (name, &block)
+	catkin_package_internal("ros/src/#{name}", &block)
 	metapackage "ros/#{name}", "ros/src/#{name}" do |pkg|
+	end
+	#makes ols manifest.xml of ros resolvable
+	metapackage "#{name}", "ros/src/#{name}" do |pkg|
 	end
 end
 
@@ -15,6 +18,7 @@ end
 
 def catkin_package_internal(options, &block)
     package_common(:import, options) do |pkg|
+    	yield(pkg) if block_given?
         pkg.depends_on('ros')
     end
 end
@@ -31,19 +35,20 @@ def catkin_build_package(options, &block)
 	    end
 	    def pkg.install
 	    	message "invoking catkin_make_isolated in folder \"%s\": this could take a while"
-	        message "\t to see the progress use: tail -f ${AUTOPROJ_PROJECT_BASE}/install/log/ros-build.log"
+	        message "\t to see the progress use: tail -f #{ENV['AUTOPROJ_PROJECT_BASE']}/install/log/ros-build.log"
 	        installspace=ENV['AUTOPROJ_PROJECT_BASE'] +"/install/"
-	        ENV['LANG']="C.UTF-8"
-	        Autobuild::Subprocess.run(self, 'build', 'catkin_make_isolated', "--install-space=#{installspace}", :working_directory => 'ros')
+	        #Autobuild::Subprocess.run(self, 'build', 'catkin_make_isolated', :working_directory => 'ros')
+	        Autobuild::Subprocess.run(self, 'build', 'sh', 'catkin_wrap.sh', "--install-space=#{installspace}", :working_directory => 'autoproj/remotes/rock.ros/')
+	        #the install space is included in the path, but we want to prefer local of global ros packages for building
+	        #so we dion't need it in the path (results in linking the wrong libpcl, with missing base-types dependency for ros packages)
 	        message "installing catkin packages to " + installspace
-	        Autobuild::Subprocess.run(self, 'build', 'catkin_make_isolated', "--install-space=#{installspace}", '--install', :working_directory => 'ros')
+	        Autobuild::Subprocess.run(self, 'build', 'sh', 'catkin_wrap.sh', '--install', "--install-space=#{installspace}", :working_directory => 'autoproj/remotes/rock.ros/')
 	    end
 	    
 	    def pkg.prepare_for_forced_build
 	    	message "invoking catkin_make_isolated --force-cmake in folder \"%s\": this could take a while"
 	    	installspace=ENV['AUTOPROJ_PROJECT_BASE'] +"/install/"
-	        ENV['LANG']="C.UTF-8"
-	    	Autobuild::Subprocess.run(self, 'build', 'catkin_make_isolated', "--install-space=#{installspace}", "--force-cmake", :working_directory => 'ros')
+	    	Autobuild::Subprocess.run(self, 'build', 'sh', 'catkin_wrap.sh', "--force-cmake", :working_directory => 'autoproj/remotes/rock.ros/')
 	    end
 	    
 	    def pkg.prepare_for_rebuild
@@ -72,10 +77,42 @@ catkin_build_package 'ros'
 
 catkin_package 'navigation_2d' do |pkg|
 	#we cannot add os dependencies in the package itself, so do it here:
-	pkg.depends_on('tbb');
-	pkg.depends_on('ros/p2os');
+	pkg.depends_on 'tbb'
+	pkg.depends_on 'ros/src/p2os'
+	pkg.depends_on 'ros/navigation'
+    pkg.depends_on 'ros/bfl'
 end
 
 catkin_package 'navigation'
 catkin_package 'bfl'
 catkin_package 'p2os'
+
+#catkin_package 'std_msgs' do |pkg|
+#	pkg.provides 'std_msgs'
+#end
+
+#catkin_package 'common_msgs' do |pkg|
+#	pkg.provides 'sensor_msgs' 
+#end
+
+
+#catkin_package 'moveit/ros'
+#catkin_package 'moveit/core'
+#catkin_package 'moveit/planners'
+#catkin_package 'moveit/robots'
+#catkin_package 'moveit/msgs' do |pkg|
+#	pkg.depends_on 'ros/object_recognition/vision/or_msgs'
+#end
+#catkin_package 'moveit/commander'
+#catkin_package 'moveit/pr2'
+#catkin_package 'moveit/ikfast'
+#catkin_package 'moveit/setup_assistant'
+#catkin_package 'moveit/experimental'
+#catkin_package 'moveit/plugins'
+#catkin_package 'moveit/docs'
+
+
+#catkin_package 'object_recognition/vision/or_msgs'
+
+
+
