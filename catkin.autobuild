@@ -7,7 +7,7 @@ def catkin_package (name, &block)
 	catkin_package_internal("ros/src/#{name}", &block)
 	metapackage "ros/#{name}", "ros/src/#{name}" do |pkg|
 	end
-	#makes ols manifest.xml of ros resolvable
+	#makes old manifest.xml of ros resolvable
 	metapackage "#{name}", "ros/src/#{name}" do |pkg|
 	end
 end
@@ -35,10 +35,10 @@ def catkin_build_package(options, &block)
 	    end
 	    def pkg.install
 	    	message "invoking catkin_make_isolated in folder \"%s\": this could take a while"
-	        message "\t to see the progress use: tail -f #{ENV['AUTOPROJ_PROJECT_BASE']}/install/log/ros-build.log"
+	        message "\t to see the progress use: tail -f #{ENV['AUTOPROJ_PROJECT_BASE']}/install/log/ros-build.log \n\t or use autoproj build --verbose"
 	        installspace=ENV['AUTOPROJ_PROJECT_BASE'] +"/install/"
 	        #Autobuild::Subprocess.run(self, 'build', 'catkin_make_isolated', :working_directory => 'ros')
-	        Autobuild::Subprocess.run(self, 'build', 'sh', 'catkin_wrap.sh', "--install-space=#{installspace}", :working_directory => 'autoproj/remotes/rock.ros/')
+	        Autobuild::Subprocess.run(self, 'build', 'sh', 'catkin_wrap.sh', :working_directory => 'autoproj/remotes/rock.ros/')
 	        #the install space is included in the path, but we want to prefer local of global ros packages for building
 	        #so we dion't need it in the path (results in linking the wrong libpcl, with missing base-types dependency for ros packages)
 	        message "installing catkin packages to " + installspace
@@ -47,6 +47,7 @@ def catkin_build_package(options, &block)
 	    
 	    def pkg.prepare_for_forced_build
 	    	message "invoking catkin_make_isolated --force-cmake in folder \"%s\": this could take a while"
+	    	message "\t to see the progress use: tail -f #{ENV['AUTOPROJ_PROJECT_BASE']}/install/log/ros-build.log \n\t or use autoproj build --verbose"
 	    	installspace=ENV['AUTOPROJ_PROJECT_BASE'] +"/install/"
 	    	Autobuild::Subprocess.run(self, 'build', 'sh', 'catkin_wrap.sh', "--force-cmake", :working_directory => 'autoproj/remotes/rock.ros/')
 	    end
@@ -67,7 +68,10 @@ end
 # it is the dependency to actually invoke catkin
 # the name is fixed to ros in order to let "amake" work in the ros/ subfolder
 
-catkin_build_package 'ros'
+catkin_build_package 'ros' do |pkg|
+	pkg.provides 'sensor_msgs'
+	pkg.provides 'std_msgs'
+end
 
 
 
@@ -87,32 +91,24 @@ catkin_package 'navigation'
 catkin_package 'bfl'
 catkin_package 'p2os'
 
-#catkin_package 'std_msgs' do |pkg|
-#	pkg.provides 'std_msgs'
-#end
 
-#catkin_package 'common_msgs' do |pkg|
-#	pkg.provides 'sensor_msgs' 
-#end
-
-
-#catkin_package 'moveit/ros'
-#catkin_package 'moveit/core'
-#catkin_package 'moveit/planners'
-#catkin_package 'moveit/robots'
-#catkin_package 'moveit/msgs' do |pkg|
-#	pkg.depends_on 'ros/object_recognition/vision/or_msgs'
-#end
-#catkin_package 'moveit/commander'
-#catkin_package 'moveit/pr2'
-#catkin_package 'moveit/ikfast'
-#catkin_package 'moveit/setup_assistant'
-#catkin_package 'moveit/experimental'
-#catkin_package 'moveit/plugins'
-#catkin_package 'moveit/docs'
+catkin_package 'moveit/ros'
+catkin_package 'moveit/core'
+catkin_package 'moveit/planners'
+catkin_package 'moveit/robots'
+catkin_package 'moveit/msgs' do |pkg|
+	pkg.depends_on 'ros/object_recognition/vision/or_msgs'
+end
+catkin_package 'moveit/commander'
+catkin_package 'moveit/pr2'
+catkin_package 'moveit/ikfast'
+catkin_package 'moveit/setup_assistant'
+catkin_package 'moveit/experimental'
+catkin_package 'moveit/plugins'
+catkin_package 'moveit/docs'
 
 
-#catkin_package 'object_recognition/vision/or_msgs'
+catkin_package 'object_recognition/vision/or_msgs'
 
 
 
