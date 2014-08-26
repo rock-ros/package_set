@@ -30,12 +30,12 @@ def catkin_build_package(options, &block)
     package_common(:import, options) do |pkg|
 		yield(pkg) if block_given?
 		Autobuild.parallel_build_level=1
-		def pkg.import
+		def pkg.import (whatever)
 			#we don't import, but the install function (overridden below) needs to be executed, so this is a import package with nothing to import
 	    end
 	    def pkg.install
 	    	message "invoking catkin_make_isolated in folder \"%s\": this could take a while"
-	        message "\t to see the progress use: tail -f #{ENV['AUTOPROJ_PROJECT_BASE']}/install/log/ros-build.log \n\t or use autoproj build --verbose"
+	        message "\t to see the progress use: tail -f #{ENV['AUTOPROJ_CURRENT_ROOT']}/install/log/ros-build.log \n\t or use autoproj build --verbose"
 	        installspace=ENV['AUTOPROJ_PROJECT_BASE'] +"/install/"
 	        #Autobuild::Subprocess.run(self, 'build', 'catkin_make_isolated', :working_directory => 'ros')
 	        Autobuild::Subprocess.run(self, 'build', 'sh', 'catkin_wrap.sh', :working_directory => 'autoproj/remotes/rock.ros/')
@@ -47,7 +47,7 @@ def catkin_build_package(options, &block)
 	    
 	    def pkg.prepare_for_forced_build
 	    	message "invoking catkin_make_isolated --force-cmake in folder \"%s\": this could take a while"
-	    	message "\t to see the progress use: tail -f #{ENV['AUTOPROJ_PROJECT_BASE']}/install/log/ros-build.log \n\t or use autoproj build --verbose"
+	    	message "\t to see the progress use: tail -f #{ENV['AUTOPROJ_CURRENT_ROOT']}/install/log/ros-build.log \n\t or use autoproj build --verbose"
 	    	installspace=ENV['AUTOPROJ_PROJECT_BASE'] +"/install/"
 	    	Autobuild::Subprocess.run(self, 'build', 'sh', 'catkin_wrap.sh', "--force-cmake", :working_directory => 'autoproj/remotes/rock.ros/')
 	    end
@@ -73,8 +73,6 @@ catkin_build_package 'ros' do |pkg|
 	pkg.provides 'std_msgs'
 end
 
-
-
 # actual ros packages
 # IMPORTANT: they do NOT state the /ros/ prefix, it is added automatically by the 
 # catkin_package definition
@@ -91,7 +89,6 @@ catkin_package 'navigation'
 catkin_package 'bfl'
 catkin_package 'p2os'
 
-
 catkin_package 'moveit/ros'
 catkin_package 'moveit/core'
 catkin_package 'moveit/planners'
@@ -99,6 +96,8 @@ catkin_package 'moveit/robots'
 catkin_package 'moveit/msgs' do |pkg|
 	pkg.depends_on 'ros/object_recognition/vision/or_msgs'
 end
+
+
 catkin_package 'moveit/commander'
 catkin_package 'moveit/pr2'
 catkin_package 'moveit/ikfast'
@@ -106,9 +105,7 @@ catkin_package 'moveit/setup_assistant'
 catkin_package 'moveit/experimental'
 catkin_package 'moveit/plugins'
 catkin_package 'moveit/docs'
-
-
 catkin_package 'object_recognition/vision/or_msgs'
 
-
-
+# there are no default packages to install in this package set (empty parameters)
+default_packages
