@@ -36,7 +36,7 @@ def catkin_build_package(options, &block)
 	    def pkg.install
 	    	message "invoking catkin_make_isolated in folder \"%s\": this could take a while"
 	        message "\t to see the progress use: tail -f #{ENV['AUTOPROJ_CURRENT_ROOT']}/install/log/ros-build.log \n\t or use autoproj build --verbose"
-	        installspace=ENV['AUTOPROJ_PROJECT_BASE'] +"/install/"
+	        installspace=ENV['AUTOPROJ_CURRENT_ROOT'] +"/install/"
 	        #Autobuild::Subprocess.run(self, 'build', 'catkin_make_isolated', :working_directory => 'ros')
 	        Autobuild::Subprocess.run(self, 'build', 'sh', 'catkin_wrap.sh', :working_directory => 'autoproj/remotes/rock.ros/')
 	        #the install space is included in the path, but we want to prefer local of global ros packages for building
@@ -48,12 +48,12 @@ def catkin_build_package(options, &block)
 	    def pkg.prepare_for_forced_build
 	    	message "invoking catkin_make_isolated --force-cmake in folder \"%s\": this could take a while"
 	    	message "\t to see the progress use: tail -f #{ENV['AUTOPROJ_CURRENT_ROOT']}/install/log/ros-build.log \n\t or use autoproj build --verbose"
-	    	installspace=ENV['AUTOPROJ_PROJECT_BASE'] +"/install/"
+	    	installspace=ENV['AUTOPROJ_CURRENT_ROOT'] +"/install/"
 	    	Autobuild::Subprocess.run(self, 'build', 'sh', 'catkin_wrap.sh', "--force-cmake", :working_directory => 'autoproj/remotes/rock.ros/')
 	    end
 	    
 	    def pkg.prepare_for_rebuild
-	    	installspace=ENV['AUTOPROJ_PROJECT_BASE'] +"/ros"
+	    	installspace=ENV['AUTOPROJ_CURRENT_ROOT'] +"/ros"
 	    	message "deleting build folder #{installspace}/build_isolated"
 		    Autobuild::Subprocess.run(self, 'build', 'rm', "-rf", "#{installspace}/build_isolated", :working_directory => 'ros')
 		    Autobuild::Subprocess.run(self, 'build', 'rm', "-rf", "#{installspace}/devel_isolated", :working_directory => 'ros')
