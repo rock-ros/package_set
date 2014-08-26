@@ -29,7 +29,6 @@ end
 def catkin_build_package(options, &block)
     package_common(:import, options) do |pkg|
 		yield(pkg) if block_given?
-		Autobuild.parallel_build_level=1
 		def pkg.import (whatever)
 			#we don't import, but the install function (overridden below) needs to be executed, so this is a import package with nothing to import
 	    end
