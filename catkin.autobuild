@@ -106,5 +106,9 @@ catkin_package 'moveit/plugins'
 catkin_package 'moveit/docs'
 catkin_package 'object_recognition/vision/or_msgs'
 
-# there are no default packages to install in this package set (empty parameters)
-default_packages
+
+# this file seems to be parsed last, so the definition must be here and not in ros.autobuild
+# the packages from this file are in the default otherwise
+default_packages 'tools/orogen_ros', 'tools/rtt_transports/ros'
+					
+
