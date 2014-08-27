@@ -1,10 +1,11 @@
 # create a catkin_package, so the catkin "src" folder does not occur in the pacake name
 # done by creating a real package include in the src folder and also creating a metapackage
-# for renaming to the manifests, so one can write "- ros/navigation" and that translates to a 
-# ros/src/navigation checkout destination
+# for renaming to the manifests, so one can write "- ros_ws/navigation" and that translates to a 
+# ros_ws/src/navigation checkout destination
 
 def catkin_package (name, &block)
 	catkin_package_internal("ros/src/#{name}", &block)
+	remove_from_default "ros/src/#{name}"
 	metapackage "ros/#{name}", "ros/src/#{name}" do |pkg|
 	end
 	#makes old manifest.xml of ros resolvable
@@ -71,6 +72,7 @@ catkin_build_package 'ros' do |pkg|
 	pkg.provides 'sensor_msgs'
 	pkg.provides 'std_msgs'
 end
+remove_from_default 'ros'
 
 # actual ros packages
 # IMPORTANT: they do NOT state the /ros/ prefix, it is added automatically by the 
@@ -105,10 +107,4 @@ catkin_package 'moveit/experimental'
 catkin_package 'moveit/plugins'
 catkin_package 'moveit/docs'
 catkin_package 'object_recognition/vision/or_msgs'
-
-
-# this file seems to be parsed last, so the definition must be here and not in ros.autobuild
-# the packages from this file are in the default otherwise
-default_packages 'tools/orogen_ros', 'tools/rtt_transports/ros'
-					
 
