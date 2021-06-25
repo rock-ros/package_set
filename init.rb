@@ -23,7 +23,9 @@ Autoproj.env_set 'ROS_SETUP', Autoproj.user_config('ROS_PREFIX') + "/setup.sh"
 Autoproj.env_add_path 'PYTHONPATH', File.join(Autoproj.user_config('ROS_PREFIX'), 'lib', 'python2.7', 'dist-packages')
 Autoproj.env_set 'ROS_MASTER_URI', 'http://localhost:11311'
 Autobuild.env_clear 'ROS_ROOT'
+
 Autobuild::Orogen.transports << 'ros'
+Autoproj.workspace.osdep_suffixes << "ros-#{Autoproj.config.get('ROS_PREFIX')}"
 
 # We cannot set ROS_ROOT within the autoproj environment as some of the RTT
 # stuff still tries to build as ROS when set. Instead, set ROS_ROOT in a

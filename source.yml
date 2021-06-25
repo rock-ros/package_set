@@ -1,19 +1,11 @@
 name: rock.ros
 
 version_control:
-#rock-ros bridge
-    - tools/rtt_transports/ros:
-        gitorious: orocos-communication/ros-transport
-        branch: $ROCK_FLAVOR
-    - tools/orogen_ros:
-        gitorious: rock-ros/orogen_ros
-        branch: $ROCK_FLAVOR
+    - tools/rtt_ros_transport:
+      github: rock-ros/rtt_ros_transport
 
-#catkin packages
+    #catkin packages
     #dummy package to invoke catkin once for all packages below        
-    - ros:
-        type: none
-        
     - ros/src/navigation_2d/*:
         type: git
         url: https://github.com/skasperski/navigation_2d.git
@@ -23,7 +15,7 @@ version_control:
         type: git
         url: https://github.com/ros-planning/navigation.git
         push_to: https://github.com/ros-planning/navigation.git
-        branch: hydro-devel
+        branch: $ROS_PREFIX-devel
       
     - ros/src/bfl:
         type: git
@@ -38,7 +30,7 @@ version_control:
     - ros/src/moveit/.*:
         type: git
         url: https://github.com/ros-planning/moveit_$PACKAGE_BASENAME.git
-        branch: hydro-devel
+        branch: $ROS_PREFIX-devel
         
     - ros/src/object_recognition/vision/.*:
         type: svn
@@ -47,12 +39,10 @@ version_control:
     - ros/src/common_msgs:
         type: git
         url: https://github.com/ros/common_msgs.git
-        branch: hydro-devel
+        branch: $ROS_PREFIX-devel
     
     - ros/src/std_msgs:
         type: git
         url: https://github.com/ros/std_msgs.git
-        branch: groovy-devel
+        branch: $ROS_PREFIX-devel
     
-    
-        

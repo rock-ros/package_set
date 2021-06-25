@@ -1,4 +1,4 @@
-# create a catkin_package, so the catkin "src" folder does not occur in the pacake name
+# create a catkin_package, so the catkin "src" folder does not occur in the packake name
 # done by creating a real package include in the src folder and also creating a metapackage
 # for renaming to the manifests, so one can write "- ros_ws/navigation" and that translates to a 
 # ros_ws/src/navigation checkout destination
@@ -68,7 +68,7 @@ end
 # it is the dependency to actually invoke catkin
 # the name is fixed to ros in order to let "amake" work in the ros/ subfolder
 
-catkin_build_package 'ros' do |pkg|
+metapackage 'ros' do |pkg|
 	pkg.provides 'sensor_msgs'
 	pkg.provides 'std_msgs'
 end
