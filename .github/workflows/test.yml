@@ -1,0 +1,22 @@
+name: test
+on: [push]
+jobs:
+  unittests:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: current_branch
+
+      - name: Bootstrap
+        run: docker build -t rock-ros .  --build-arg PKG_BRANCH=${{ steps.current_branch.outputs.branch }}
+
+      - name: Build base/orogen/types with ROS Transport
+        run: docker run rock-ros /bin/bash -c "source /opt/ros/melodic.sh; source /home/docker/rock_test/env.sh; amake base/orogen/types"
+
+
+
