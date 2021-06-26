@@ -35,3 +35,5 @@ File.open(env_ros, 'w') do |io|
     io.puts "export ROS_ROOT=#{Autoproj.user_config('ROS_PREFIX')}"
 end
 Autoproj.env_source_after env_ros
+
+Autoproj.env_set "CATKIN_SETUP_UTIL_ARGS","--extend"
