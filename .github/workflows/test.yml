@@ -16,7 +16,7 @@ jobs:
         run: docker build -t rock-ros .  --build-arg PKG_BRANCH=${{ steps.current_branch.outputs.branch }}
 
       - name: Build base/orogen/types with ROS Transport
-        run: docker run rock-ros /bin/bash -c "source /home/docker/rock_test/env.sh; source /opt/ros/melodic.sh; amake base/orogen/types"
+        run: docker run rock-ros /bin/bash -c "source /home/docker/rock_test/env.sh; source /opt/ros/melodic/setup.sh; amake base/orogen/types"
 
 
 
